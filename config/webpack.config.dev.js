@@ -11,6 +11,7 @@ const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -101,6 +102,8 @@ module.exports = {
             // please link the files into your node_modules/ and let module-resolution kick in.
             // Make sure your source files are compiled, as they will not be processed in any way.
             // new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+            new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+            new TsconfigPathsPlugin({ configFile: paths.appTsConfig }),
         ],
     },
     module: {
@@ -128,15 +131,6 @@ module.exports = {
                 include: [paths.appSrc, paths.componentIndexJs],
             },
             {
-                test: /\.tsx?$/,
-                loader: "awesome-typescript-loader"
-            },
-            {
-                test: /\.js$/,
-                enforce: "pre",
-                loader: "source-map-loader"
-            },
-            {
                 // "oneOf" will traverse all following loaders until one will
                 // match the requirements. When no loader matches it will fall
                 // back to the "file" loader at the end of the loader list.
@@ -162,8 +156,25 @@ module.exports = {
                             // This is a feature of `babel-loader` for webpack (not Babel itself).
                             // It enables caching results in ./node_modules/.cache/babel-loader/
                             // directory for faster rebuilds.
+                            babelrc: false,
+                            presets: [require.resolve('babel-preset-react-app')],
+                            compact: true,
                             cacheDirectory: true,
                         },
+                    },
+                    // Compile .tsx?
+                    {
+                        test: /\.(ts|tsx)$/,
+                        include: paths.appSrc,
+                        use: [
+                            {
+                                loader: require.resolve('ts-loader'),
+                                options: {
+                                    // disable type checker - we will use it in fork plugin
+                                    transpileOnly: true,
+                                },
+                            },
+                        ],
                     },
                     // "postcss" loader applies autoprefixer to our CSS.
                     // "css" loader resolves paths in CSS and adds assets as dependencies.
