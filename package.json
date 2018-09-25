@@ -1,6 +1,6 @@
 {
   "name": "ts-component-scripts",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "react-typescript component script",
   "bin": {
     "ts-component-scripts": "./index.js"
@@ -50,6 +50,7 @@
     "react-error-overlay": "1.0.10",
     "react-test-renderer": "16.4.0",
     "sass-loader": "^6.0.6",
+    "source-map-loader": "^0.2.1",
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.4",
     "ts-jest": "22.0.1",

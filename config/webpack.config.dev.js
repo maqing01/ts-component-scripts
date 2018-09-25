@@ -7,8 +7,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
@@ -117,17 +117,8 @@ module.exports = {
             // It's important to do this before Babel processes the JS.
             {
                 test: /\.(js|jsx)$/,
+                loader: require.resolve('source-map-loader'),
                 enforce: 'pre',
-                use: [
-                    {
-                        options: {
-                            formatter: eslintFormatter,
-                            eslintPath: require.resolve('eslint'),
-
-                        },
-                        loader: require.resolve('eslint-loader'),
-                    },
-                ],
                 include: [paths.appSrc, paths.componentIndexJs],
             },
             {
@@ -146,7 +137,6 @@ module.exports = {
                         //   name: fileNames.img,
                         // },
                     },
-                    // Process JS with Babel.
                     {
                         test: /\.(js|jsx)$/,
                         include: [paths.appSrc, paths.componentIndexJs],
@@ -159,6 +149,7 @@ module.exports = {
                             cacheDirectory: true,
                         },
                     },
+
                     // Compile .tsx?
                     {
                         test: /\.(ts|tsx)$/,
