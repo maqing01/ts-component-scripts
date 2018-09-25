@@ -37,11 +37,25 @@ function getServedPath(appPackageJson) {
         (publicUrl ? url.parse(publicUrl).pathname : '/');
     return ensureSlash(servedUrl, true);
 }
+
+function getConfig() {
+    const configPath = path.resolve('tsconfig.json');
+    try {
+        const config = fs.readJsonSync(configPath).compilerOptions;
+        return {
+            rootDir: config.rootDir || 'src',
+            outDir: config.outDir || 'dist'
+        }
+    } catch (err) {
+        error(err.toString())
+    }
+}
 // config after eject: we're in ./config/
 module.exports = {
     dotenv: resolveApp('.env'),
-    appBuild: resolveApp('build'),
+    appBuild: resolveApp(getConfig().outDir),
     appPublic: resolveApp('demo'),
+    appTsConfig: resolveApp('tsconfig.json'),
     appHtml: resolveApp('demo/index.html'),
     appIndexJs: resolveApp('demo/index.js'),
     appPackageJson: resolveApp('package.json'),

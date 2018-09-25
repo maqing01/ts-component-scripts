@@ -7,6 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const getClientEnvironment = require('./env');
@@ -102,7 +103,6 @@ module.exports = {
             // please link the files into your node_modules/ and let module-resolution kick in.
             // Make sure your source files are compiled, as they will not be processed in any way.
             // new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
-            new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
             new TsconfigPathsPlugin({ configFile: paths.appTsConfig }),
         ],
     },
@@ -117,9 +117,19 @@ module.exports = {
             // It's important to do this before Babel processes the JS.
             {
                 test: /\.(js|jsx)$/,
-                loader: require.resolve('source-map-loader'),
                 enforce: 'pre',
-                include: [paths.appSrc, paths.componentIndexJs],
+                use: [
+                    require.resolve('source-map-loader'),
+                    {
+                        options: {
+                            formatter: eslintFormatter,
+                            eslintPath: require.resolve('eslint'),
+
+                        },
+                        loader: require.resolve('eslint-loader'),
+                    },
+                ],
+                include: [paths.appSrc, paths.componentIndexJs, paths.appBuild],
             },
             {
                 // "oneOf" will traverse all following loaders until one will
@@ -137,9 +147,10 @@ module.exports = {
                         //   name: fileNames.img,
                         // },
                     },
+                    // Process JS with Babel.
                     {
                         test: /\.(js|jsx)$/,
-                        include: [paths.appSrc, paths.componentIndexJs],
+                        include: [paths.appSrc, paths.componentIndexJs, paths.appBuild],
                         loader: require.resolve('babel-loader'),
                         options: {
 
@@ -149,11 +160,10 @@ module.exports = {
                             cacheDirectory: true,
                         },
                     },
-
                     // Compile .tsx?
                     {
                         test: /\.(ts|tsx)$/,
-                        include: paths.appSrc,
+                        include: [paths.appSrc, paths.componentIndexJs, paths.appBuild],
                         use: [
                             {
                                 loader: require.resolve('ts-loader'),
@@ -294,6 +304,11 @@ module.exports = {
         // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
         // You can remove this if you don't use Moment.js:
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+        new ForkTsCheckerWebpackPlugin({
+            async: false,
+            watch: paths.componentIndexJs,
+            tsconfig: paths.appTsConfig
+        }),
     ],
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
