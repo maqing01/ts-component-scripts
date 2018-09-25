@@ -3,6 +3,12 @@
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
+const chalk = require('chalk');
+
+const log = type => msg => {
+    console.log(chalk[type](msg))
+}
+const error = log('red')
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebookincubator/create-react-app/issues/637
@@ -47,7 +53,7 @@ function getConfig() {
             outDir: config.outDir || 'dist'
         }
     } catch (err) {
-        error(err.toString())
+        console.error(err.toString())
     }
 }
 // config after eject: we're in ./config/
