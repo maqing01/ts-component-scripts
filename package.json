@@ -1,18 +1,18 @@
 {
-  "name": "ts-component-scripts",
-  "version": "1.1.2",
+  "name": "ts-component-script",
+  "version": "1.0.0",
   "description": "react-typescript component script",
   "bin": {
     "ts-component-scripts": "./index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tsx-react-ui/ts-component-scripts.git"
+    "url": "git+https://github.com/tsx-react-ui/ts-component-script.git"
   },
   "author": "maqing01",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tsx-react-ui/ts-component-scripts/issues"
+    "url": "https://github.com/tsx-react-ui/ts-component-script/issues"
   },
   "dependencies": {
     "autoprefixer": "7.1.2",
