@@ -44,6 +44,11 @@ function getServedPath(appPackageJson) {
     return ensureSlash(servedUrl, true);
 }
 
+//add flexible
+const flexibleStr = (function () {
+    return fs.readFileSync('node_modules/lm-flexible/build/changeRem-min.js', 'utf-8');
+})();
+
 function getConfig() {
     const configPath = path.resolve('tsconfig.json');
     try {
