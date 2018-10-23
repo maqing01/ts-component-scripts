@@ -1,6 +1,6 @@
 {
   "name": "ts-component-script",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "react-typescript component script",
   "bin": {
     "ts-component-script": "./index.js"
